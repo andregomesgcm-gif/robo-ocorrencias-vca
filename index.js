@@ -39,30 +39,43 @@ async function iniciarRobo() {
     sock.ev.on('creds.update', saveCreds);
 
     sock.ev.on('messages.upsert', async m => {
+        console.log('\n--- 🔔 SENSOR DE ATIVIDADE DISPARADO ---');
+        
         const msg = m.messages[0];
-        if (!msg.message || msg.key.fromMe) return;
+        if (!msg) {
+            console.log('❌ Erro: Evento recebido, mas a mensagem está vazia.');
+            return;
+        }
 
         const deOndeVeio = msg.key.remoteJid;
-        if (!deOndeVeio.endsWith('@g.us')) return;
+        console.log(`📡 Origem do sinal: ${deOndeVeio}`);
+
+        if (msg.key.fromMe) {
+            console.log('❌ Ação: Ignorado (Mensagem enviada pelo próprio celular conectado).');
+            return;
+        }
+        
+        if (!deOndeVeio.endsWith('@g.us')) {
+            console.log('❌ Ação: Ignorado (A mensagem não veio de um grupo).');
+            return;
+        }
 
         try {
             const metadadosGrupo = await sock.groupMetadata(deOndeVeio);
             const nomeGrupo = metadadosGrupo.subject;
 
-            // --- SISTEMA ESPIÃO DE LOGS ---
-            console.log(`\n--- MENSAGEM RECEBIDA ---`);
-            console.log(`NOME DO GRUPO: "${nomeGrupo}"`);
+            console.log(`🏷️ NOME EXATO DO GRUPO: "${nomeGrupo}"`);
 
             const gruposPermitidos = ['COORDENAÇÃO DE ÁREA', 'SUPERVISÃO DE OPERAÇÕES - GM', 'TESTE GM'];
             
             if (!gruposPermitidos.includes(nomeGrupo)) {
-                console.log(`❌ Ação: Ignorado (Não está na lista de permitidos).`);
+                console.log(`❌ Ação: Ignorado (O nome do grupo não está na lista).`);
                 return;
             }
 
             const texto = msg.message.conversation || msg.message.extendedTextMessage?.text;
             if (!texto) {
-                 console.log(`❌ Ação: Ignorado (Mensagem não possui texto).`);
+                 console.log(`❌ Ação: Ignorado (A mensagem não possui texto escrito).`);
                  return;
             }
 
@@ -72,11 +85,12 @@ async function iniciarRobo() {
                 mensagem: texto
             };
 
+            console.log(`⏳ Enviando para a Planilha...`);
             await axios.post(WEBHOOK_URL, dados);
-            console.log(`🚀 SUCESSO: Ocorrência enviada para a Planilha!`);
+            console.log(`🚀 SUCESSO: Ocorrência enviada para o Google Sheets!`);
 
         } catch (erro) {
-            console.log('Erro ao processar:', erro.message);
+            console.log('⚠️ Erro interno no processamento:', erro.message);
         }
     });
 }
