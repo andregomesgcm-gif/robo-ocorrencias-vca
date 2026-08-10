@@ -42,7 +42,7 @@ client.on('message', async msg => {
 
     // Trava 2: Define os nomes EXATOS dos grupos autorizados. 
     // (Atenção: o nome tem que ser idêntico ao do WhatsApp, com letras maiúsculas e acentos)
-    const gruposPermitidos = ['COORDENAÇÃO DE ÁREA', 'SUPERVISÃO DE OPERAÇÕES - GM'];
+    const gruposPermitidos = ['COORDENAÇÃO DE ÁREA', 'SUPERVISÃO DE OPERAÇÕES - GM', 'TESTE GM'];
 
     // Trava 3: Se o nome do grupo que enviou a mensagem não estiver na nossa lista, ignora.
     if (!gruposPermitidos.includes(chat.name)) return;
