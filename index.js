@@ -12,10 +12,20 @@ const port = process.env.PORT || 3000;
 app.get('/', (req, res) => res.send('Robô Operacional!'));
 app.listen(port, () => console.log(`Servidor rodando na porta ${port}`));
 
-// Configuração de conexão do WhatsApp
+// Configuração de conexão do WhatsApp (Modo Econômico de Memória)
 const client = new Client({
     authStrategy: new LocalAuth(),
-    puppeteer: { args: ['--no-sandbox', '--disable-setuid-sandbox'] }
+    puppeteer: { 
+        args: [
+            '--no-sandbox', 
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
+            '--no-zygote',
+            '--disable-gpu'
+        ] 
+    }
 });
 
 // Gera um link com a imagem do QR Code
