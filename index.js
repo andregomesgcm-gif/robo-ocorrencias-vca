@@ -18,10 +18,13 @@ const client = new Client({
     puppeteer: { args: ['--no-sandbox', '--disable-setuid-sandbox'] }
 });
 
-// Gera o QR Code no terminal
+// Gera um link com a imagem do QR Code
 client.on('qr', (qr) => {
-    console.log('ESCANEIE O QR CODE ABAIXO:');
-    qrcode.generate(qr, { small: true });
+    const linkDaImagem = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(qr);
+    console.log('====================================================');
+    console.log('CLIQUE NO LINK ABAIXO PARA ABRIR A IMAGEM DO QR CODE:');
+    console.log(linkDaImagem);
+    console.log('====================================================');
 });
 
 client.on('ready', () => {
