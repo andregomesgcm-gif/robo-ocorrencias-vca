@@ -12,7 +12,7 @@ const port = process.env.PORT || 3000;
 app.get('/', (req, res) => res.send('Robô Operacional!'));
 app.listen(port, () => console.log(`Servidor rodando na porta ${port}`));
 
-// Configuração de conexão do WhatsApp (Modo Econômico de Memória)
+// Configuração de conexão do WhatsApp (Modo Ultra Econômico)
 const client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: { 
@@ -23,6 +23,7 @@ const client = new Client({
             '--disable-accelerated-2d-canvas',
             '--no-first-run',
             '--no-zygote',
+            '--single-process',
             '--disable-gpu'
         ] 
     }
