@@ -4,7 +4,7 @@ const axios = require('axios');
 const express = require('express');
 
 // COLOQUE AQUI A URL DO SEU APPS SCRIPT (Mantenha as aspas)
-const WEBHOOK_URL = 'SUA_URL_DO_APPS_SCRIPT_AQUI';
+const WEBHOOK_URL = 'AKfycbwgJSu-r7LTJ1-nf2F0_KZNx3-dCVeYJfaMxuUsSV-3njvGjWbq7BqJfMtPSFVAnUQ7';
 
 // Servidor web básico apenas para manter a nuvem rodando
 const app = express();
