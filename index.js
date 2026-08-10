@@ -33,19 +33,30 @@ client.on('ready', () => {
 
 // Ouve as mensagens recebidas
 client.on('message', async msg => {
-    // A linha abaixo (sem as barras) faria o robô ler APENAS mensagens de grupos. 
-    // Por enquanto, deixaremos comentada para você testar mandando mensagem do seu próprio número.
-    // if (!msg.from.includes('@g.us')) return; 
+    
+    // Solicita ao WhatsApp as informações completas da conversa
+    const chat = await msg.getChat();
 
+    // Trava 1: Se a mensagem NÃO for de um grupo, ignora e para por aqui.
+    if (!chat.isGroup) return; 
+
+    // Trava 2: Define os nomes EXATOS dos grupos autorizados. 
+    // (Atenção: o nome tem que ser idêntico ao do WhatsApp, com letras maiúsculas e acentos)
+    const gruposPermitidos = ['COORDENAÇÃO DE ÁREA', 'SUPERVISÃO DE OPERAÇÕES - GM'];
+
+    // Trava 3: Se o nome do grupo que enviou a mensagem não estiver na nossa lista, ignora.
+    if (!gruposPermitidos.includes(chat.name)) return;
+
+    // Se passou pelas travas, prepara os dados
     const dados = {
-        remetente: msg.author || msg.from,
+        remetente: chat.name + " (" + (msg.author || msg.from) + ")", // Salva o nome do grupo e o número de quem mandou
         mensagem: msg.body
     };
 
     try {
         // Envia para o Google Sheets
         await axios.post(WEBHOOK_URL, dados);
-        console.log('Ocorrência encaminhada para a planilha!');
+        console.log(`Ocorrência capturada no grupo: ${chat.name}`);
     } catch (erro) {
         console.error('Erro ao encaminhar:', erro.message);
     }
